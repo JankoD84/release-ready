@@ -1,0 +1,35 @@
+name: release-ready
+description: GO / CONDITIONAL GO / NO-GO release readiness for every pull request. Deterministic rules, no AI, no external service.
+author: Dulvarn
+branding:
+  icon: check-circle
+  color: green
+inputs:
+  fail-on:
+    description: "Fail the job on 'no-go' (default), 'conditional', or 'never'"
+    default: no-go
+  comment:
+    description: Post and keep updating one PR comment
+    default: "true"
+  checks:
+    description: Include the status of other check runs on the head commit
+    default: "true"
+  config:
+    description: Path to the config file
+    default: .release-ready.json
+outputs:
+  decision:
+    description: GO, CONDITIONAL GO or NO-GO
+    value: ${{ steps.run.outputs.decision }}
+runs:
+  using: composite
+  steps:
+    - id: run
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: |
+        args=(--fail-on "${{ inputs.fail-on }}" --config "${{ inputs.config }}")
+        [ "${{ inputs.comment }}" = "true" ] && args+=(--comment)
+        [ "${{ inputs.checks }}" = "true" ] && args+=(--checks)
+        python3 "${{ github.action_path }}/release_ready.py" "${args[@]}"

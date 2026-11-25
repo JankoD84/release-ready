@@ -1,0 +1,19 @@
+# .github/workflows/release-ready.yml
+name: release-ready
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+permissions:
+  contents: read
+  pull-requests: write   # to post the comment
+  checks: read           # to read other check runs
+jobs:
+  release-ready:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: JankoD84/release-ready@v1
+        with:
+          fail-on: no-go

@@ -1,0 +1,7 @@
+{
+  "large_change_lines": 400,
+  "extra_risky_paths": ["src/app/invoices/**"],
+  "extra_ignore_paths": ["fixtures/**"],
+  "disabled_rules": ["empty-description"],
+  "severity_overrides": { "dependencies": "go" }
+}
